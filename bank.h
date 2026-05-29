@@ -2,6 +2,8 @@
 #define BANK_H
 
 void run_banking_system(void);
+void create_account(void);
+int create_account_number(void);
 
 struct account
 {

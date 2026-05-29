@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include "bank.h"
+#include "database.h"
 
 void run_banking_system(void) 
 {
@@ -29,6 +30,7 @@ void run_banking_system(void)
         {
             case 1:
                 printf("\n--- Creating a new account ---\n");
+                create_account();
                 break;
             case 2:
             case 3:
@@ -36,7 +38,6 @@ void run_banking_system(void)
             case 5:
             case 6:
             case 7:
-                printf("\n[ Feature coming soon! ]\n");
                 break;
             case 0:
                 printf("\nExiting system. Goodbye!\n");
@@ -45,4 +46,53 @@ void run_banking_system(void)
                 printf("\nError: Unknown option. Please try again.\n");
         }
     }
+}
+
+void create_account(void) 
+{
+    struct account new_account;
+    new_account.account_number = create_account_number();
+    printf("Enter name: ");
+    scanf("%99s", new_account.name);
+    while (getchar() != '\n'); 
+    printf("Enter surname: ");
+    scanf("%99s", new_account.surname);
+    while (getchar() != '\n'); 
+    printf("Enter address: ");
+    scanf("%199s", new_account.address);
+    while (getchar() != '\n');
+    printf("Enter identification number: ");
+    scanf("%11s", new_account.identification_number);
+    while (getchar() != '\n');
+    new_account.balance = 0.0;
+
+    int result = save_account_to_file(&new_account);
+    if (result) 
+    {
+        printf("\nAccount created successfully! Account number: %d\n", new_account.account_number);
+    } 
+    else 
+    {
+        printf("\nError: Failed to save account. Please try again.\n");
+    }
+}
+
+int create_account_number(void) 
+{
+    FILE *file = fopen("accounts.dat", "rb");
+    if(file == NULL) 
+    {
+        return 1000;
+    }
+    int highest_account_number = 1000;
+    struct account temp_account;
+    while (fread(&temp_account, sizeof(struct account), 1, file) == 1) 
+    {
+        if (temp_account.account_number > highest_account_number) 
+        {
+            highest_account_number = temp_account.account_number;
+        }
+    }
+    fclose(file);
+    return highest_account_number + 1;
 }
