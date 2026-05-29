@@ -1,0 +1,7 @@
+*.o
+
+banking_system
+
+*.dat
+
+.vscode/
