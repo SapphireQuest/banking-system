@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <string.h>
 #include "bank.h"
 #include "database.h"
 
@@ -59,11 +60,9 @@ void create_account(void)
     scanf("%99s", new_account.surname);
     while (getchar() != '\n'); 
     printf("Enter address: ");
-    scanf("%199s", new_account.address);
+    scanf(" %199[^\n]", new_account.address);
     while (getchar() != '\n');
-    printf("Enter identification number: ");
-    scanf("%11s", new_account.identification_number);
-    while (getchar() != '\n');
+    validate_identification_number(new_account.identification_number);
     new_account.balance = 0.0;
 
     int result = save_account_to_file(&new_account);
@@ -95,4 +94,24 @@ int create_account_number(void)
     }
     fclose(file);
     return highest_account_number + 1;
+}
+
+void validate_identification_number(char *identification_number) 
+{
+    int valid = 0;
+    while (valid == 0) 
+    {
+        printf("Enter identification number (11 digits): ");
+        scanf("%11s", identification_number);
+        while (getchar() != '\n');
+
+        if (strlen(identification_number) == 11) 
+        {
+            valid = 1;
+        }
+        else 
+        {
+            printf("\nError: Identification number must be exactly 11 digits.\n");
+        }
+    }
 }

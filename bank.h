@@ -4,6 +4,7 @@
 void run_banking_system(void);
 void create_account(void);
 int create_account_number(void);
+void validate_identification_number(char *identification_number);
 
 struct account
 {
