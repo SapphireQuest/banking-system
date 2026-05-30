@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include "database.h"
+#include <string.h>
 
 int save_account_to_file(const struct account *account) 
 {
@@ -73,18 +74,23 @@ void display_sub_menu(void)
         {
             case 1:
                 printf("\n--- Searching by account number ---\n");
+                search_by_account_number();
                 break;
             case 2:
                 printf("\n--- Searching by name ---\n");
+                search_by_string(choice);
                 break;
             case 3:
                 printf("\n--- Searching by surname ---\n");
+                search_by_string(choice);
                 break;
             case 4:
                 printf("\n--- Searching by address ---\n");
+                search_by_string(choice);
                 break;
             case 5:
                 printf("\n--- Searching by identification number ---\n");
+                search_by_string(choice);
                 break;
             case 0:
                 printf("\nReturning to main menu...\n");
@@ -94,4 +100,85 @@ void display_sub_menu(void)
         }
     }
     return;
+}
+
+void search_by_account_number(void)
+{
+    int account_number;
+    struct account temp_account;
+
+    printf("Enter account number to search: ");
+    scanf("%d", &account_number);
+    while (getchar() != '\n');
+
+    FILE *file = find_account(account_number, &temp_account);
+    if (file == NULL)
+    {
+        printf("\nError: Account not found.\n");
+        return;
+    }
+
+    printf("\nAccount Number: %d\n", temp_account.account_number);
+    printf("Name: %s\n", temp_account.name);
+    printf("Surname: %s\n", temp_account.surname);
+    printf("Address: %s\n", temp_account.address);
+    printf("Identification Number: %s\n", temp_account.identification_number);
+    printf("Balance: %.2f\n", temp_account.balance);
+    fclose(file);
+    return;
+}
+
+void search_by_string(int choice)
+{
+    char search_term[200];
+    struct account temp_account;
+    int found = 0;
+
+    printf("Enter search term: ");
+    scanf(" %199[^\n]", search_term);
+    while (getchar() != '\n');
+
+    FILE *file = fopen("accounts.dat", "rb");
+    if (file == NULL)
+    {
+        printf("\nError: No accounts found.\n");
+        return; 
+    }
+
+    while (fread(&temp_account, sizeof(struct account), 1, file) == 1) 
+    {
+        int match = 0;
+        switch (choice)
+        {
+            case 2:
+                match = (strcmp(temp_account.name, search_term) == 0);
+                break;
+            case 3:
+                match = (strcmp(temp_account.surname, search_term) == 0);
+                break;
+            case 4:
+                match = (strcmp(temp_account.address, search_term) == 0);
+                break;
+            case 5:
+                match = (strcmp(temp_account.identification_number, search_term) == 0);
+                break;
+        }
+        if (match)
+        {
+            printf("\nAccount Number: %d\n", temp_account.account_number);
+            printf("Name: %s\n", temp_account.name);
+            printf("Surname: %s\n", temp_account.surname);
+            printf("Address: %s\n", temp_account.address);
+            printf("Identification Number: %s\n", temp_account.identification_number);
+            printf("Balance: %.2f\n", temp_account.balance);
+            printf("-------------------------\n");
+            found++;
+        }
+    }
+    printf("\nTotal matches found: %d\n", found);
+    fclose(file);
+    if (!found)
+    {
+        printf("\nNo matching accounts found.\n");
+    }
 }
