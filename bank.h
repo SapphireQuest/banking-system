@@ -7,6 +7,7 @@ int create_account_number(void);
 void validate_identification_number(char *identification_number);
 void deposit(void);
 void withdraw(void);
+void transfer(void);
 
 struct account
 {

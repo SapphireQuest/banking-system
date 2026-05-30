@@ -45,6 +45,8 @@ void run_banking_system(void)
                 withdraw();
                 break;
             case 6:
+                transfer();
+                break;
             case 7:
                 break;
             case 0:
@@ -150,6 +152,8 @@ void deposit(void)
         temp_account.balance += amount;
         fseek(file, -sizeof(struct account), SEEK_CUR);
         fwrite(&temp_account, sizeof(struct account), 1, file);
+        fflush(file);
+        
         printf("\nDeposit successful! New balance: %.2f\n", temp_account.balance);
     }
     else 
@@ -189,6 +193,8 @@ void withdraw(void)
             temp_account.balance -= amount;
             fseek(file, -sizeof(struct account), SEEK_CUR);
             fwrite(&temp_account, sizeof(struct account), 1, file);
+            fflush(file);
+
             printf("\nWithdrawal successful! New balance: %.2f\n", temp_account.balance);
         }
         else 
@@ -201,5 +207,77 @@ void withdraw(void)
         printf("\nError: Withdrawal amount must be positive.\n");
     }
     fclose(file);
+    return;
+}
+
+void transfer(void)
+{
+    int from_account_number, to_account_number;
+    double amount;
+    struct account from_account, to_account;
+
+    printf("Enter your account number: ");
+    scanf("%d", &from_account_number);
+    while (getchar() != '\n');
+    
+    FILE *from_file = find_account(from_account_number, &from_account);
+    if (from_file == NULL)
+    {
+        printf("\nError: Your account not found.\n");
+        return;
+    }
+
+    printf("Enter destination account number: ");
+    scanf("%d", &to_account_number);
+    while (getchar() != '\n');
+
+    FILE *to_file = find_account(to_account_number, &to_account);
+    if (to_file == NULL)
+    {   
+        printf("\nError: Destination account not found.\n");
+        fclose(from_file);
+        return;
+    }
+    if (from_account_number == to_account_number)
+    {
+        printf("\nError: Cannot transfer to the same account.\n");
+        fclose(from_file);
+        fclose(to_file);
+        return;
+    }
+
+    printf("\nYour current balance: %.2f\n", from_account.balance);
+    printf("Enter amount to transfer: ");
+    scanf("%lf", &amount);
+    while (getchar() != '\n');
+
+    if (amount > 0)
+    {
+        if (from_account.balance >= amount) 
+        {
+            from_account.balance -= amount;
+            to_account.balance += amount;
+
+            fseek(from_file, -sizeof(struct account), SEEK_CUR);
+            fwrite(&from_account, sizeof(struct account), 1, from_file);
+            fflush(from_file);
+
+            fseek(to_file, -sizeof(struct account), SEEK_CUR);
+            fwrite(&to_account, sizeof(struct account), 1, to_file);
+            fflush(to_file);
+            
+            printf("\nTransfer successful! Your new balance: %.2f\n", from_account.balance);
+        }
+        else 
+        {
+            printf("\nError: Not enough funds. Your current balance: %.2f\n", from_account.balance);
+        }
+    }
+    else 
+    {
+        printf("\nError: Transfer amount must be positive.\n");
+    }
+    fclose(from_file);
+    fclose(to_file);
     return;
 }
