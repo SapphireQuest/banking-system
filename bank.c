@@ -51,6 +51,7 @@ void run_banking_system(void)
                 transfer();
                 break;
             case 7:
+                //take_out_car_insurance();
                 break;
             case 0:
                 printf("\nExiting system. Goodbye!\n");
@@ -76,6 +77,17 @@ void create_account(void)
     while (getchar() != '\n');
     validate_identification_number(new_account.identification_number);
     new_account.balance = 0.0;
+
+    char confirmation;
+    printf("\nAre you sure you want to create this account? (y/n): ");
+    scanf(" %c", &confirmation);
+    while (getchar() != '\n');
+
+    if (confirmation != 'y' && confirmation != 'Y') 
+    {
+        printf("\nAccount creation cancelled.\n");
+        return;
+    }
 
     int result = save_account_to_file(&new_account);
     if (result) 
@@ -150,6 +162,17 @@ void deposit(void)
     scanf("%lf", &amount);
     while (getchar() != '\n');
 
+    char confirmation;
+    printf("\nAre you sure you want to deposit %.2f to account %d? (y/n): ", amount, account_number);
+    scanf(" %c", &confirmation);
+    while (getchar() != '\n');
+    if (confirmation != 'y' && confirmation != 'Y') 
+    {
+        printf("\nDeposit cancelled.\n");
+        fclose(file);
+        return;
+    }
+
     if (amount > 0) 
     {
         temp_account.balance += amount;
@@ -188,6 +211,17 @@ void withdraw(void)
     printf("Enter amount to withdraw: ");
     scanf("%lf", &amount);
     while (getchar() != '\n');
+
+    char confirmation;
+    printf("\nAre you sure you want to withdraw %.2f from account %d? (y/n): ", amount, account_number);
+    scanf(" %c", &confirmation);
+    while (getchar() != '\n');
+    if (confirmation != 'y' && confirmation != 'Y') 
+    {
+        printf("\nWithdrawal cancelled.\n");
+        fclose(file);
+        return;
+    }
 
     if (amount > 0) 
     {
@@ -258,6 +292,18 @@ void transfer(void)
     {
         if (from_account.balance >= amount) 
         {
+            char confirmation;
+            printf("\nAre you sure you want to transfer %.2f from account %d to account %d? (y/n): ", amount, from_account_number, to_account_number);
+            scanf(" %c", &confirmation);
+            while (getchar() != '\n');
+            if (confirmation != 'y' && confirmation != 'Y') 
+            {
+                printf("\nTransfer cancelled.\n");
+                fclose(from_file);
+                fclose(to_file);
+                return;
+            }
+
             from_account.balance -= amount;
             to_account.balance += amount;
 

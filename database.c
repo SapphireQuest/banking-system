@@ -175,9 +175,12 @@ void search_by_string(int choice)
             found++;
         }
     }
-    printf("\nTotal matches found: %d\n", found);
     fclose(file);
-    if (!found)
+    if (found > 0)
+    {
+        printf("\nTotal matches found: %d\n", found);
+    }
+    else
     {
         printf("\nNo matching accounts found.\n");
     }

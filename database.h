@@ -8,6 +8,7 @@ FILE *find_account(int search_id, struct account *target_account);
 void display_sub_menu(void);
 void search_by_account_number(void);
 void search_by_string(int choice);
+void take_out_car_insurance(void);
 
 
 
