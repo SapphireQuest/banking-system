@@ -53,3 +53,45 @@ FILE* find_account(int search_id, struct account *target_account)
     fclose(file);
     return NULL;
 }
+
+void display_sub_menu(void)
+{
+    int choice = -1;
+    while (choice != 0)
+    {        
+        printf("\n--- Search Menu ---\n");
+        printf("1. Search by account number\n");
+        printf("2. Search by name\n");
+        printf("3. Search by surname\n");
+        printf("4. Search by address\n");
+        printf("5. Search by identification number\n");
+        printf("0. Return to main menu\n");
+        printf("Enter your choice: ");
+        scanf("%d", &choice);
+        while (getchar() != '\n');
+        switch (choice)
+        {
+            case 1:
+                printf("\n--- Searching by account number ---\n");
+                break;
+            case 2:
+                printf("\n--- Searching by name ---\n");
+                break;
+            case 3:
+                printf("\n--- Searching by surname ---\n");
+                break;
+            case 4:
+                printf("\n--- Searching by address ---\n");
+                break;
+            case 5:
+                printf("\n--- Searching by identification number ---\n");
+                break;
+            case 0:
+                printf("\nReturning to main menu...\n");
+                break;
+            default:
+                printf("\nInvalid choice. Please try again.\n");
+        }
+    }
+    return;
+}

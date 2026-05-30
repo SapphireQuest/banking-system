@@ -38,6 +38,9 @@ void run_banking_system(void)
                 display_all_accounts();
                 break;
             case 3:
+                printf("\n--- Searching for an account ---\n");
+                display_sub_menu();
+                break;
             case 4:
                 deposit();
                 break;
@@ -153,7 +156,7 @@ void deposit(void)
         fseek(file, -sizeof(struct account), SEEK_CUR);
         fwrite(&temp_account, sizeof(struct account), 1, file);
         fflush(file);
-        
+
         printf("\nDeposit successful! New balance: %.2f\n", temp_account.balance);
     }
     else 
