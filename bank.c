@@ -34,6 +34,9 @@ void run_banking_system(void)
                 create_account();
                 break;
             case 2:
+                printf("\n--- Listing all accounts ---\n");
+                display_all_accounts();
+                break;
             case 3:
             case 4:
             case 5:
