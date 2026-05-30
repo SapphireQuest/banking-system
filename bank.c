@@ -39,7 +39,11 @@ void run_banking_system(void)
                 break;
             case 3:
             case 4:
+                deposit();
+                break;
             case 5:
+                withdraw();
+                break;
             case 6:
             case 7:
                 break;
@@ -117,4 +121,85 @@ void validate_identification_number(char *identification_number)
             printf("\nError: Identification number must be exactly 11 digits.\n");
         }
     }
+}
+
+void deposit(void)
+{
+    int account_number;
+    double amount;
+    struct account temp_account;
+    
+    printf("Enter account number: ");
+    scanf("%d", &account_number);
+    while (getchar() != '\n');
+    
+    FILE *file = find_account(account_number, &temp_account);
+    if (file == NULL)
+    {
+        printf("\nError: Account not found.\n");
+        return;
+    }
+
+    printf("\nCurrent balance: %.2f\n", temp_account.balance);
+    printf("Enter amount to deposit: ");
+    scanf("%lf", &amount);
+    while (getchar() != '\n');
+
+    if (amount > 0) 
+    {
+        temp_account.balance += amount;
+        fseek(file, -sizeof(struct account), SEEK_CUR);
+        fwrite(&temp_account, sizeof(struct account), 1, file);
+        printf("\nDeposit successful! New balance: %.2f\n", temp_account.balance);
+    }
+    else 
+    {
+        printf("\nError: Deposit amount must be positive.\n");
+    }
+    fclose(file);
+    return;
+}
+
+void withdraw(void)
+{
+    int account_number;
+    double amount;
+    struct account temp_account;
+
+    printf("Enter account number: ");
+    scanf("%d", &account_number);
+    while (getchar() != '\n');
+
+    FILE *file = find_account(account_number, &temp_account);
+    if (file == NULL)
+    {
+        printf("\nError: Account not found.\n");
+        return;
+    }
+
+    printf("\nCurrent balance: %.2f\n", temp_account.balance);
+    printf("Enter amount to withdraw: ");
+    scanf("%lf", &amount);
+    while (getchar() != '\n');
+
+    if (amount > 0) 
+    {
+        if (temp_account.balance >= amount) 
+        {
+            temp_account.balance -= amount;
+            fseek(file, -sizeof(struct account), SEEK_CUR);
+            fwrite(&temp_account, sizeof(struct account), 1, file);
+            printf("\nWithdrawal successful! New balance: %.2f\n", temp_account.balance);
+        }
+        else 
+        {
+            printf("\nError: Insufficient funds. Current balance: %.2f\n", temp_account.balance);
+        }
+    }
+    else 
+    {
+        printf("\nError: Withdrawal amount must be positive.\n");
+    }
+    fclose(file);
+    return;
 }

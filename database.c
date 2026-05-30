@@ -18,7 +18,7 @@ void display_all_accounts(void)
     FILE *file = fopen("accounts.dat", "rb");
     if (file == NULL)
     {
-        printf("No accounts found.\n");
+        printf("Error: No accounts found.\n");
         return; 
     }
     struct account temp_account;
@@ -33,4 +33,23 @@ void display_all_accounts(void)
         printf("-------------------------\n");
     }
     fclose(file);
+}
+
+FILE* find_account(int search_id, struct account *target_account) 
+{
+    FILE *file = fopen("accounts.dat", "r+b");
+    if (file == NULL) 
+    {
+        return NULL; 
+    }
+
+    while (fread(target_account, sizeof(struct account), 1, file) == 1) 
+    {
+        if (target_account->account_number == search_id) 
+        {
+            return file; 
+        }
+    }
+    fclose(file);
+    return NULL;
 }
