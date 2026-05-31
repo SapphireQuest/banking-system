@@ -330,3 +330,47 @@ void transfer(void)
     fclose(to_file);
     return;
 }
+
+void take_out_insurance(void)
+{
+    int search_id;
+    struct account temp_account;
+    struct car_insurance new_insurance;
+
+    printf("Enter your account number: ");
+    scanf("%d", &search_id);
+    while (getchar() != '\n');
+
+    FILE *file = find_account(search_id, &temp_account);
+    if (file == NULL)
+    {
+        printf("\nError: Account not found.\n");
+        return;
+    }
+    fclose(file);
+
+    new_insurance.account_number = search_id;
+
+    printf("Enter car registration number: ");
+    scanf(" %19[^\n]", new_insurance.registration_number);
+    while (getchar() != '\n');
+
+    printf("Enter insurance price: ");
+    scanf("%lf", &new_insurance.price);
+    while (getchar() != '\n');
+
+    char confirmation;
+    printf("\nAre you sure you want to take out this insurance? (y/n): ");
+    scanf(" %c", &confirmation);
+    while (getchar() != '\n');
+    if (confirmation != 'y' && confirmation != 'Y') 
+    {
+        printf("\nInsurance purchase cancelled.\n");
+        return;
+    }
+    else
+    {
+        save_insurance_to_file(&new_insurance);
+        return;
+    } 
+}

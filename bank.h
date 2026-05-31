@@ -19,5 +19,12 @@ struct account
     double balance;
 };
 
+struct car_insurance
+{
+    int account_number;
+    char registration_number[20];
+    double price;
+};
+
 
 #endif

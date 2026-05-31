@@ -185,3 +185,16 @@ void search_by_string(int choice)
         printf("\nNo matching accounts found.\n");
     }
 }
+
+void save_insurance_to_file(struct car_insurance *insurance)
+{
+    FILE *file = fopen("car_insurance.dat", "ab");
+    if (file == NULL) 
+    {
+        printf("\nError: Could not save insurance. Please try again.\n");
+        return;
+    }
+    fwrite(insurance, sizeof(struct car_insurance), 1, file);
+    fclose(file);
+    printf("\nInsurance saved successfully!\n");
+}
