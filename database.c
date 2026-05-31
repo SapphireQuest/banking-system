@@ -25,12 +25,14 @@ void display_all_accounts(void)
     struct account temp_account;
     while (fread(&temp_account, sizeof(struct account), 1, file) == 1) 
     {
+        printf("\n");
         printf("Account Number: %d\n", temp_account.account_number);
         printf("Name: %s\n", temp_account.name);
         printf("Surname: %s\n", temp_account.surname);
         printf("Address: %s\n", temp_account.address);
         printf("Identification Number: %s\n", temp_account.identification_number);
         printf("Balance: %.2f\n", temp_account.balance);
+        display_user_insurances(temp_account.account_number);
         printf("-------------------------\n");
     }
     fclose(file);
@@ -124,6 +126,7 @@ void search_by_account_number(void)
     printf("Address: %s\n", temp_account.address);
     printf("Identification Number: %s\n", temp_account.identification_number);
     printf("Balance: %.2f\n", temp_account.balance);
+    display_user_insurances(temp_account.account_number);
     fclose(file);
     return;
 }
@@ -171,6 +174,7 @@ void search_by_string(int choice)
             printf("Address: %s\n", temp_account.address);
             printf("Identification Number: %s\n", temp_account.identification_number);
             printf("Balance: %.2f\n", temp_account.balance);
+            display_user_insurances(temp_account.account_number);
             printf("-------------------------\n");
             found++;
         }
@@ -197,4 +201,33 @@ void save_insurance_to_file(struct car_insurance *insurance)
     fwrite(insurance, sizeof(struct car_insurance), 1, file);
     fclose(file);
     printf("\nInsurance saved successfully!\n");
+}
+
+void display_user_insurances(int account_number)
+{
+    FILE *file = fopen("car_insurance.dat", "rb");
+    if (file == NULL)
+    {
+        printf("No insurances found for this account.\n");
+        return; 
+    }
+    struct car_insurance temp_insurance;
+    int found = 0;
+    printf("\n--- Car Insurances ---\n");
+    while (fread(&temp_insurance, sizeof(struct car_insurance), 1, file) == 1) 
+    {
+        if (temp_insurance.account_number == account_number)
+        {
+            printf("Registration Number: %s\n", temp_insurance.registration_number);
+            printf("Price: %.2f\n", temp_insurance.price);
+            printf("\n");
+            found++;
+        }
+    }
+    fclose(file);
+    if (found == 0)
+    {
+        printf("No insurances found for this account.\n");
+    }
+    return;
 }

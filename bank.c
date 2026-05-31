@@ -51,7 +51,7 @@ void run_banking_system(void)
                 transfer();
                 break;
             case 7:
-                //take_out_car_insurance();
+                take_out_car_insurance();
                 break;
             case 0:
                 printf("\nExiting system. Goodbye!\n");
@@ -331,7 +331,7 @@ void transfer(void)
     return;
 }
 
-void take_out_insurance(void)
+void take_out_car_insurance(void)
 {
     int search_id;
     struct account temp_account;
@@ -370,6 +370,7 @@ void take_out_insurance(void)
     }
     else
     {
+        
         save_insurance_to_file(&new_insurance);
         return;
     } 
