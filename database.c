@@ -2,10 +2,10 @@
 #include "database.h"
 #include <string.h>
 
-int save_account_to_file(const struct account *account) 
+int save_account_to_file(const struct account *account)
 {
     FILE *file = fopen("accounts.dat", "ab");
-    if (file == NULL) 
+    if (file == NULL)
     {
         return 0;
     }
@@ -20,10 +20,10 @@ void display_all_accounts(void)
     if (file == NULL)
     {
         printf("Error: No accounts found.\n");
-        return; 
+        return;
     }
     struct account temp_account;
-    while (fread(&temp_account, sizeof(struct account), 1, file) == 1) 
+    while (fread(&temp_account, sizeof(struct account), 1, file) == 1)
     {
         printf("\n");
         printf("Account Number: %d\n", temp_account.account_number);
@@ -38,19 +38,19 @@ void display_all_accounts(void)
     fclose(file);
 }
 
-FILE* find_account(int search_id, struct account *target_account) 
+FILE *find_account(int search_id, struct account *target_account)
 {
     FILE *file = fopen("accounts.dat", "r+b");
-    if (file == NULL) 
+    if (file == NULL)
     {
-        return NULL; 
+        return NULL;
     }
 
-    while (fread(target_account, sizeof(struct account), 1, file) == 1) 
+    while (fread(target_account, sizeof(struct account), 1, file) == 1)
     {
-        if (target_account->account_number == search_id) 
+        if (target_account->account_number == search_id)
         {
-            return file; 
+            return file;
         }
     }
     fclose(file);
@@ -61,7 +61,7 @@ void display_sub_menu(void)
 {
     int choice = -1;
     while (choice != 0)
-    {        
+    {
         printf("\n--- Search Menu ---\n");
         printf("1. Search by account number\n");
         printf("2. Search by name\n");
@@ -71,34 +71,35 @@ void display_sub_menu(void)
         printf("0. Return to main menu\n");
         printf("Enter your choice: ");
         scanf("%d", &choice);
-        while (getchar() != '\n');
+        while (getchar() != '\n')
+            ;
         switch (choice)
         {
-            case 1:
-                printf("\n--- Searching by account number ---\n");
-                search_by_account_number();
-                break;
-            case 2:
-                printf("\n--- Searching by name ---\n");
-                search_by_string(choice);
-                break;
-            case 3:
-                printf("\n--- Searching by surname ---\n");
-                search_by_string(choice);
-                break;
-            case 4:
-                printf("\n--- Searching by address ---\n");
-                search_by_string(choice);
-                break;
-            case 5:
-                printf("\n--- Searching by identification number ---\n");
-                search_by_string(choice);
-                break;
-            case 0:
-                printf("\nReturning to main menu...\n");
-                break;
-            default:
-                printf("\nInvalid choice. Please try again.\n");
+        case 1:
+            printf("\n--- Searching by account number ---\n");
+            search_by_account_number();
+            break;
+        case 2:
+            printf("\n--- Searching by name ---\n");
+            search_by_string(choice);
+            break;
+        case 3:
+            printf("\n--- Searching by surname ---\n");
+            search_by_string(choice);
+            break;
+        case 4:
+            printf("\n--- Searching by address ---\n");
+            search_by_string(choice);
+            break;
+        case 5:
+            printf("\n--- Searching by identification number ---\n");
+            search_by_string(choice);
+            break;
+        case 0:
+            printf("\nReturning to main menu...\n");
+            break;
+        default:
+            printf("\nInvalid choice. Please try again.\n");
         }
     }
     return;
@@ -111,7 +112,8 @@ void search_by_account_number(void)
 
     printf("Enter account number to search: ");
     scanf("%d", &account_number);
-    while (getchar() != '\n');
+    while (getchar() != '\n')
+        ;
 
     FILE *file = find_account(account_number, &temp_account);
     if (file == NULL)
@@ -139,32 +141,33 @@ void search_by_string(int choice)
 
     printf("Enter search term: ");
     scanf(" %199[^\n]", search_term);
-    while (getchar() != '\n');
+    while (getchar() != '\n')
+        ;
 
     FILE *file = fopen("accounts.dat", "rb");
     if (file == NULL)
     {
         printf("\nError: No accounts found.\n");
-        return; 
+        return;
     }
 
-    while (fread(&temp_account, sizeof(struct account), 1, file) == 1) 
+    while (fread(&temp_account, sizeof(struct account), 1, file) == 1)
     {
         int match = 0;
         switch (choice)
         {
-            case 2:
-                match = (strcmp(temp_account.name, search_term) == 0);
-                break;
-            case 3:
-                match = (strcmp(temp_account.surname, search_term) == 0);
-                break;
-            case 4:
-                match = (strcmp(temp_account.address, search_term) == 0);
-                break;
-            case 5:
-                match = (strcmp(temp_account.identification_number, search_term) == 0);
-                break;
+        case 2:
+            match = (strcmp(temp_account.name, search_term) == 0);
+            break;
+        case 3:
+            match = (strcmp(temp_account.surname, search_term) == 0);
+            break;
+        case 4:
+            match = (strcmp(temp_account.address, search_term) == 0);
+            break;
+        case 5:
+            match = (strcmp(temp_account.identification_number, search_term) == 0);
+            break;
         }
         if (match)
         {
@@ -193,7 +196,7 @@ void search_by_string(int choice)
 void save_insurance_to_file(struct car_insurance *insurance)
 {
     FILE *file = fopen("car_insurance.dat", "ab");
-    if (file == NULL) 
+    if (file == NULL)
     {
         printf("\nError: Could not save insurance. Please try again.\n");
         return;
@@ -209,12 +212,12 @@ void display_user_insurances(int account_number)
     if (file == NULL)
     {
         printf("No insurances found for this account.\n");
-        return; 
+        return;
     }
     struct car_insurance temp_insurance;
     int found = 0;
     printf("\n--- Car Insurances ---\n");
-    while (fread(&temp_insurance, sizeof(struct car_insurance), 1, file) == 1) 
+    while (fread(&temp_insurance, sizeof(struct car_insurance), 1, file) == 1)
     {
         if (temp_insurance.account_number == account_number)
         {
