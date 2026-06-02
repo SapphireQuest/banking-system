@@ -128,7 +128,7 @@ void validate_identification_number(char *identification_number)
     {
         printf("Enter identification number (11 digits): ");
         scanf("%11s", identification_number);
-        while (getchar() != '\n');
+        while (getchar() != '\n'); 
 
         if (strlen(identification_number) != 11)
         {
@@ -351,8 +351,8 @@ void transfer(void)
 void take_out_car_insurance(void)
 {
     int search_id;
-    struct account temp_account;
-    struct car_insurance new_insurance = {0};
+    struct account temp_account = {0};         
+    struct car_insurance new_insurance = {0};  
 
     printf("Enter your account number: ");
     scanf("%d", &search_id);
@@ -364,31 +364,48 @@ void take_out_car_insurance(void)
         printf("\nError: Account not found.\n");
         return;
     }
-    fclose(file);
 
     new_insurance.account_number = search_id;
 
     printf("Enter car registration number: ");
     scanf(" %19[^\n]", new_insurance.registration_number);
     while (getchar() != '\n');
-
+     
+    printf("\nCurrent balance: %.2f\n", temp_account.balance);
     printf("Enter insurance price: ");
     scanf("%lf", &new_insurance.price);
     while (getchar() != '\n');
 
+    if (temp_account.balance < new_insurance.price)
+    {
+        printf("\nError: Insufficient funds. \n");
+        fclose(file); 
+        return;
+    }
+
     char confirmation;
-    printf("\nAre you sure you want to take out this insurance? (y/n): ");
+    printf("\nAre you sure you want to take out this insurance for %.2f? (y/n): ", new_insurance.price);
     scanf(" %c", &confirmation);
     while (getchar() != '\n');
-    if (confirmation != 'y' && confirmation != 'Y')
+
+    if (confirmation != 'y' && confirmation != 'Y') 
     {
         printf("\nInsurance purchase cancelled.\n");
+        fclose(file); 
         return;
     }
     else
     {
+        temp_account.balance -= new_insurance.price;
+        
+        fseek(file, -sizeof(struct account), SEEK_CUR);
+        fwrite(&temp_account, sizeof(struct account), 1, file);
+        fflush(file);
+        fclose(file); 
 
         save_insurance_to_file(&new_insurance);
+        
+        printf("Transaction complete! Your new balance is: %.2f\n", temp_account.balance);
         return;
-    }
+    } 
 }
